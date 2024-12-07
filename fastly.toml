@@ -1,0 +1,42 @@
+# This file describes a Fastly Compute package. To learn more visit:
+# https://www.fastly.com/documentation/reference/compute/fastly-toml
+
+authors = ["joe@joeshaw.org"]
+cloned_from = "https://github.com/fastly/compute-starter-kit-rust-default"
+description = "Update Porkbun DNS with a DynDNS-compatible endpoint"
+language = "rust"
+manifest_version = 3
+name = "porkbun-dyndns"
+service_id = "KtCUHhojdNCf9RsOMBvOj6"
+
+[local_server]
+
+  [local_server.backends]
+
+    [local_server.backends.porkbun]
+      url = "https://api.porkbun.com"
+
+  [local_server.config_stores]
+
+    [local_server.config_stores.porkbun_config]
+      format = "inline-toml"
+
+      [local_server.config_stores.porkbun_config.contents]
+        domain = "joeshaw.org"
+
+  [local_server.secret_stores]
+
+    [[local_server.secret_stores.porkbun_secrets]]
+      file = "secrets.api_key.txt"
+      key = "api_key"
+
+    [[local_server.secret_stores.porkbun_secrets]]
+      file = "secrets.secret_key.txt"
+      key = "secret_key"
+
+    [[local_server.secret_stores.porkbun_secrets]]
+      data = "wolf"
+      key = "auth_token"
+
+[scripts]
+  build = "cargo build --bin fastly-compute-project --release --target wasm32-wasi --color always"
